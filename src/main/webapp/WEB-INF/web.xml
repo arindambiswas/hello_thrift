@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- PLEASE DO NOT USE A BEAUTIFIER ON THIS FILE BEFORE CHECKING IN -->
+<!DOCTYPE web-app 
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" 
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	
+	<!-- Properties Startup Mapping -->
+	<servlet>
+		<servlet-name>projectproperties</servlet-name>
+		<servlet-class>com.mixercast.thrift.util.ProjectProperties</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+</web-app>

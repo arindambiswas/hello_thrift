@@ -1,0 +1,89 @@
+<project name="protocol_buffer" default="all">
+
+	<!-- Load properties specific to the user's system -->
+	<property file="user.properties"/>
+
+	<!-- Load properties required by the build -->
+	<property file="build.properties" />
+	
+	<property name="javadir" value="${basedir}/src/main/java"/>
+	<property name="webconfigdir" value="${basedir}/src/main/webapp"/>
+	<property name="librarydir" value="${basedir}/lib"/>
+	<property name="resourcedir" value="${basedir}/src/main/resources"/>
+	<property name="webappdir" value="${basedir}/webapp"/>
+	<property name="classesdir" value="${webappdir}/WEB-INF/classes"/>
+	<property name="tomcatlib" value="${tomcat}/common/lib"/>
+	<property name="build" value="${basedir}/build"/>
+	
+	<path id="libraries">
+	    <fileset dir="${librarydir}">
+	    	<include name="**/*.jar"/>
+	    </fileset>
+	    <fileset dir="${tomcatlib}">
+		    <include name="**/*.jar"/>
+	    </fileset>
+	    <path location="${resourcedir}"/>
+
+		<path location="${webappdir}/WEB-INF/classes"/>
+    	<path location="${tmp}" />
+    </path>
+	    
+	<property name="libraries" refid="libraries" />
+
+	<target name="clean">
+		<delete dir="${webappdir}/WEB-INF"/>
+	</target>
+
+	<target name="compile">
+		<mkdir dir="${classesdir}"/>
+		<javac srcdir="${javadir}"
+             destdir="${classesdir}"
+             classpathref="libraries" debug="off" debuglevel="lines,var,source" 
+			 deprecation="on" source="1.5" target="1.5">
+		</javac>
+	</target>
+
+	<target name="deploy">
+		<echo message="Copy to WEB-INF/*.xml files"/>
+		<copy todir="${webappdir}">
+			<fileset dir="${webconfigdir}">
+				<include name="**" />
+			</fileset>
+		</copy>
+		
+		<echo message="Deploy: configs"/>
+		<copy todir="${classesdir}">
+			<fileset dir="${resourcedir}">
+				<include name="*.*"/>
+			</fileset>
+		</copy>
+
+		<echo message="Copy lib jars to WEB-INF/lib"/>
+		<mkdir dir="${webappdir}/WEB-INF/lib"/>
+		<copy todir="${webappdir}/WEB-INF/lib">
+			<fileset dir="${librarydir}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+
+		<echo message="Copy *.properties"/>
+		<copy todir="${classesdir}/">
+			<fileset dir="${resourcedir}">
+				<include name="*.properties"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="all" depends="clean,compile,deploy">
+	</target>
+	
+	<target name="run" depends="compile">
+		<java fork="true"  classpathref="libraries">
+			<classpath path="${targetdir}"/>
+			<arg value="${action}"/>
+		</java>
+	</target>
+	<target name="build-clean">
+		<delete dir="${build}" failonerror="false"/>
+	</target>
+</project>
